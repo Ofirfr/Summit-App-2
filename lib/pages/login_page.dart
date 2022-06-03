@@ -69,7 +69,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
                         fontFamily: 'Pacifico')),
-                const SizedBox(height: 40),
+                SizedBox(height: size.height * 0.1),
                 TextFormField(
                   controller: _userNameController,
                   style: const TextStyle(color: Colors.white),

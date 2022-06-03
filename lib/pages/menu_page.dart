@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
+import 'package:summit_app_2/pages/attendance_calendar_page.dart';
 
 class Menu extends StatelessWidget {
   const Menu({Key? key}) : super(key: key);
@@ -20,25 +20,26 @@ class Menu extends StatelessWidget {
       menuButtonsWidget("Admin Page", Colors.redAccent,
           Icons.admin_panel_settings_outlined, context),
     ];
-    const rowSpacer = TableRow(children: [
+    var rowSpacer = TableRow(children: [
       SizedBox(
+        width: 1,
+        height: MediaQuery.of(context).size.height * 0.05,
+      ),
+      const SizedBox(
         width: 1,
         height: 10,
       ),
-      SizedBox(
-        width: 1,
-        height: 10,
-      ),
-      SizedBox(
+      const SizedBox(
         width: 1,
         height: 20,
       )
     ]);
+    var screenSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.grey,
         appBar: AppBar(
           backgroundColor: Colors.green,
-          title: const Text("Summit App"),
+          title: const Text("Summit Running and Fitness"),
         ),
         body: SingleChildScrollView(
           reverse: true,
@@ -51,7 +52,7 @@ class Menu extends StatelessWidget {
                     child: IntrinsicWidth(
                       child: Container(
                           color: Colors.white,
-                          width: 1000,
+                          width: MediaQuery.of(context).size.width,
                           alignment: Alignment.center,
                           child: const Image(
                               fit: BoxFit.cover,
@@ -62,13 +63,15 @@ class Menu extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                const Align(
-                    alignment: Alignment.centerLeft,
+                Align(
+                    alignment: Alignment.center,
                     child: Text(
                       "Welcome Name",
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize:
+                              screenSize.width * screenSize.height * 0.00003 +
+                                  2,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.left,
                     )),
@@ -78,10 +81,13 @@ class Menu extends StatelessWidget {
                       margin: const EdgeInsets.all(20),
                       padding: const EdgeInsets.symmetric(vertical: 50.0),
                       child: Table(
-                        columnWidths: const {
-                          0: FixedColumnWidth(165),
-                          1: FlexColumnWidth(),
-                          2: FixedColumnWidth(165)
+                        columnWidths: {
+                          0: FixedColumnWidth(
+                              MediaQuery.of(context).size.width * 0.4),
+                          1: const FlexColumnWidth(),
+                          2: FixedColumnWidth(
+                              MediaQuery.of(context).size.width *
+                                  0.4) //was 165 pixels
                         },
                         children: [
                           TableRow(children: firstRow),
@@ -96,24 +102,29 @@ class Menu extends StatelessWidget {
 
   Widget menuButtonsWidget(
       String label, Color color, IconData icon, BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
     return SizedBox(
         width: double.infinity,
-        height: 110,
+        height: screenSize.height * 0.17,
         child: ElevatedButton.icon(
-          label: Text(label),
+          label: Text(
+            label,
+            maxLines: 2,
+          ),
           icon: Icon(icon),
           style: ElevatedButton.styleFrom(
               minimumSize: const Size(1000, 800),
               primary: color,
-              textStyle:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              textStyle: TextStyle(
+                  fontSize: screenSize.width * screenSize.height * 0.00003 + 4,
+                  fontWeight: FontWeight.bold)),
           onPressed: () {
             switch (label) {
               case "Add Member":
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (ctxt) => const Menu()),
+                    MaterialPageRoute(builder: (context) => const Menu()),
                   );
                   break;
                 }
@@ -122,7 +133,7 @@ class Menu extends StatelessWidget {
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (ctxt) => const Menu()),
+                    MaterialPageRoute(builder: (context) => const Menu()),
                   );
                   break;
                 }
@@ -130,7 +141,8 @@ class Menu extends StatelessWidget {
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (ctxt) => const Menu()),
+                    MaterialPageRoute(
+                        builder: (context) => const AttendanceCalendarPage()),
                   );
                   break;
                 }
@@ -138,7 +150,7 @@ class Menu extends StatelessWidget {
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (ctxt) => const Menu()),
+                    MaterialPageRoute(builder: (context) => const Menu()),
                   );
                   break;
                 }
