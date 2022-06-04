@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import '../api/coms.dart' as coms;
+import '../api/api_district.dart' as districts;
+import '../api/api_training_type.dart' as types;
 
 class AttendanceCalendarPage extends StatefulWidget {
   const AttendanceCalendarPage({Key? key}) : super(key: key);
@@ -10,13 +13,31 @@ class AttendanceCalendarPage extends StatefulWidget {
 }
 
 class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
+  late Future<List<String>> _districtList;
+  late Future<List<String>> _typeList;
   String _selectedDate = DateTime.now().toString();
   String _selectedDistrict = 'District';
+  String _selectedType = "Type";
   String _errors = '';
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       _selectedDate = args.value.toString();
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _districtList = getDistricts();
+    _typeList = getTypes();
+  }
+
+  Future<List<String>> getDistricts() async {
+    return await (districts.getDistricts());
+  }
+
+  Future<List<String>> getTypes() async {
+    return await (types.getTypes());
   }
 
   @override
@@ -46,7 +67,7 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
               height: screenSize.height * 0.01,
             ),
             Center(
-              child: Text("Select Date and District",
+              child: Text("Set Training Info",
                   style: GoogleFonts.josefinSans(
                     fontSize: screenSize.width * 0.07,
                   )),
@@ -64,39 +85,116 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
                 SizedBox(
                   width: screenSize.width * 0.04,
                 ),
-                SizedBox(
-                  height: screenSize.height * 0.05,
-                  width: screenSize.width * 0.18,
-                  child: DropdownButton<String>(
-                    icon: const Icon(Icons.import_export_sharp),
-                    hint: const Text("District"),
-                    value: _selectedDistrict == "District"
-                        ? null
-                        : _selectedDistrict,
-                    elevation: 16,
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize:
-                            screenSize.width * screenSize.height * 0.00001 +
-                                10),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.green,
+                Row(
+                  children: [
+                    SizedBox(
+                        height: screenSize.height * 0.06,
+                        width: screenSize.width * 0.18,
+                        child: FutureBuilder<List<String>>(
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return DropdownButton<String>(
+                                icon: const Icon(Icons.import_export_sharp),
+                                hint: Text(
+                                  "District",
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: screenSize.width *
+                                              screenSize.height *
+                                              0.00001 +
+                                          10),
+                                ),
+                                value: _selectedDistrict == "District"
+                                    ? null
+                                    : _selectedDistrict,
+                                elevation: 16,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: screenSize.width *
+                                            screenSize.height *
+                                            0.00001 +
+                                        10),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.green,
+                                ),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _selectedDistrict = newValue!;
+                                    _errors = '';
+                                  });
+                                },
+                                items: snapshot.data!
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              );
+                            } else {
+                              return const LinearProgressIndicator();
+                            }
+                          },
+                          future: _districtList,
+                        )),
+                    SizedBox(
+                      width: screenSize.width * 0.03,
                     ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedDistrict = newValue!;
-                        _errors = '';
-                      });
-                    },
-                    items: <String>['North', 'South', 'Center', 'Jerusalem']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
+                    SizedBox(
+                        height: screenSize.height * 0.06,
+                        width: screenSize.width * 0.18,
+                        child: FutureBuilder<List<String>>(
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return DropdownButton<String>(
+                                icon: const Icon(Icons.import_export_sharp),
+                                hint: Text(
+                                  "Type",
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: screenSize.width *
+                                              screenSize.height *
+                                              0.00001 +
+                                          10),
+                                ),
+                                value: _selectedType == "Type"
+                                    ? null
+                                    : _selectedType,
+                                elevation: 16,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: screenSize.width *
+                                            screenSize.height *
+                                            0.00001 +
+                                        10),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.green,
+                                ),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _selectedType = newValue!;
+                                    _errors = '';
+                                  });
+                                },
+                                items: snapshot.data!
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              );
+                            } else {
+                              return const LinearProgressIndicator();
+                            }
+                          },
+                          future: _typeList,
+                        ))
+                  ],
                 ),
                 SizedBox(
                   width: screenSize.width * 0.07,
@@ -109,10 +207,16 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
                     onPressed: () {
                       print("Date $_selectedDate");
                       print("District $_selectedDistrict");
-
+                      print("Type $_selectedType");
                       if (_selectedDistrict == "District") {
                         setState(() {
-                          _errors = 'Please select District';
+                          _errors += 'Please select District\n';
+                        });
+                        return;
+                      }
+                      if (_selectedType == "Type") {
+                        setState(() {
+                          _errors += 'Please select Type\n';
                         });
                         return;
                       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:summit_app_2/pages/attendance_calendar_page.dart';
+import '../api/Coms.dart' as coms;
 
 class Menu extends StatelessWidget {
   const Menu({Key? key}) : super(key: key);
@@ -66,7 +67,7 @@ class Menu extends StatelessWidget {
                 Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Welcome Name",
+                      "Welcome ${coms.Coms.name}",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize:
