@@ -12,7 +12,6 @@ Future<String> login(String userName, String password) async {
     var jsonResponse =
         convert.jsonDecode(response.body) as Map<String, dynamic>;
     coms.Coms.token = jsonResponse["token"];
-    coms.Coms.name = userName;
     return "";
   } else if (response.statusCode == 400) {
     var jsonResponse =

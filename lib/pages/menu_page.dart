@@ -3,8 +3,8 @@ import 'package:summit_app_2/pages/attendance_calendar_page.dart';
 import '../api/Coms.dart' as coms;
 
 class Menu extends StatelessWidget {
-  const Menu({Key? key}) : super(key: key);
-
+  const Menu({Key? key, required this.name}) : super(key: key);
+  final String name;
   @override
   Widget build(BuildContext context) {
     List<Widget> firstRow = [
@@ -67,12 +67,12 @@ class Menu extends StatelessWidget {
                 Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Welcome ${coms.Coms.name}",
+                      "Welcome $name",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize:
                               screenSize.width * screenSize.height * 0.00003 +
-                                  2,
+                                  12,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.left,
                     )),
@@ -117,7 +117,7 @@ class Menu extends StatelessWidget {
               minimumSize: const Size(1000, 800),
               primary: color,
               textStyle: TextStyle(
-                  fontSize: screenSize.width * screenSize.height * 0.00003 + 4,
+                  fontSize: screenSize.width * screenSize.height * 0.00003 + 8,
                   fontWeight: FontWeight.bold)),
           onPressed: () {
             switch (label) {
@@ -125,7 +125,8 @@ class Menu extends StatelessWidget {
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Menu()),
+                    MaterialPageRoute(
+                        builder: (context) => const Menu(name: "")),
                   );
                   break;
                 }
@@ -134,7 +135,8 @@ class Menu extends StatelessWidget {
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Menu()),
+                    MaterialPageRoute(
+                        builder: (context) => const Menu(name: "")),
                   );
                   break;
                 }
@@ -151,7 +153,8 @@ class Menu extends StatelessWidget {
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Menu()),
+                    MaterialPageRoute(
+                        builder: (context) => const Menu(name: "")),
                   );
                   break;
                 }

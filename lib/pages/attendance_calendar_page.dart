@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:summit_app_2/pages/attendance_list_page.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../api/coms.dart' as coms;
 import '../api/api_district.dart' as districts;
@@ -19,9 +20,22 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
   String _selectedDistrict = 'District';
   String _selectedType = "Type";
   String _errors = '';
+
+  String getDistrict() {
+    return _selectedDistrict;
+  }
+
+  String getDate() {
+    return _selectedDate;
+  }
+
+  String getType() {
+    return _selectedType;
+  }
+
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
-      _selectedDate = args.value.toString();
+      _selectedDate = args.value.toString().substring(0, 8);
     });
   }
 
@@ -205,9 +219,6 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
                         fixedSize: Size(
                             screenSize.width * 0.38, screenSize.height * 0.05)),
                     onPressed: () {
-                      print("Date $_selectedDate");
-                      print("District $_selectedDistrict");
-                      print("Type $_selectedType");
                       if (_selectedDistrict == "District") {
                         setState(() {
                           _errors += 'Please select District\n';
@@ -220,7 +231,14 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
                         });
                         return;
                       }
-                      // go to attendance page
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AttendanceList(
+                                    date: _selectedDate,
+                                    district: _selectedDistrict,
+                                    type: _selectedType,
+                                  )));
                     },
                     child: Text(
                       "Check attendance",
