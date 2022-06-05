@@ -5,9 +5,11 @@
 // Optional: get attendance of training and mark them
 
 // Send to server all marked users as attendance
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:summit_app_2/api/coms.dart';
 import '../api/api_attendance_list.dart' as api;
+import 'menu_page.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 class AttendanceResult extends StatefulWidget {
   const AttendanceResult(
@@ -26,6 +28,7 @@ class AttendanceResult extends StatefulWidget {
 
 class _AttendanceResultState extends State<AttendanceResult> {
   late Future<List<String>>? _attendance;
+  final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
   @override
   void initState() {
     super.initState();
@@ -71,6 +74,25 @@ class _AttendanceResultState extends State<AttendanceResult> {
             const SizedBox(
               height: 10,
             ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.green,
+                    fixedSize: Size(
+                        screenSize.width * 0.38, screenSize.height * 0.05)),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Menu(name: payload["name"].toString())),
+                      (Route<dynamic> route) => false);
+                },
+                child: Text(
+                  "Close",
+                  style: TextStyle(
+                      fontSize:
+                          screenSize.width * screenSize.height * 0.00001 + 10),
+                )),
             Align(
                 alignment: Alignment.center,
                 child: Text(

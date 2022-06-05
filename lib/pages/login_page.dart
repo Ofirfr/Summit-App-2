@@ -119,7 +119,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     String userName = _userNameController.text;
                     String loggingErrors = await api.login(userName, password);
                     if (loggingErrors == "") {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => Menu(name: userName)),

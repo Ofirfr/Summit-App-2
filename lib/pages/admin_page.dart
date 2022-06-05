@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:summit_app_2/pages/add_member_page.dart';
-import 'package:summit_app_2/pages/admin_page.dart';
 import 'package:summit_app_2/pages/attendance_calendar_page.dart';
 import 'package:summit_app_2/pages/login_page.dart';
 import '../api/Coms.dart' as coms;
 
-class Menu extends StatelessWidget {
-  const Menu({Key? key, required this.name}) : super(key: key);
-  final String name;
+class AdminPage extends StatelessWidget {
+  const AdminPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     List<Widget> firstRow = [
-      menuButtonsWidget("Check Attendance", Colors.blueAccent,
-          Icons.calendar_month_outlined, context),
+      menuButtonsWidget("Districts", Colors.blueAccent,
+          Icons.travel_explore_outlined, context),
       const SizedBox(width: 1), //for spacing
       menuButtonsWidget(
-          "Events", Colors.orangeAccent, Icons.event_outlined, context),
+          "Types", Colors.orangeAccent, Icons.fitness_center_outlined, context),
     ];
     List<Widget> secondRow = [
       menuButtonsWidget(
-          "Add Member", Colors.greenAccent, Icons.add_box_outlined, context),
+          "Add Coach", Colors.greenAccent, Icons.add_box_outlined, context),
       const SizedBox(width: 1), //for spacing
-      menuButtonsWidget("Admin Page", Colors.redAccent,
-          Icons.admin_panel_settings_outlined, context),
+      menuButtonsWidget(
+          "Statistics", Colors.redAccent, Icons.bar_chart_outlined, context),
     ];
     var rowSpacer = TableRow(children: [
       SizedBox(
@@ -85,7 +83,7 @@ class Menu extends StatelessWidget {
                 Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Welcome $name",
+                      "Admin Page",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize:
@@ -168,11 +166,9 @@ class Menu extends StatelessWidget {
                 }
               case "Events":
                 {
-                  break;
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const Menu(name: "")),
+                    MaterialPageRoute(builder: (context) => const AdminPage()),
                   );
                   break;
                 }
