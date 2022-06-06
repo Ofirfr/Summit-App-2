@@ -6,7 +6,7 @@ const String baseUrl = coms.Consts.ip;
 
 Future<List<String>> getDistricts() async {
   var response = await http.get(
-    Uri.http(baseUrl, "district/GetDistricts"),
+    coms.Consts.UriGen(baseUrl, "district/GetDistricts"),
     headers: {"x-auth-token": coms.Coms.token},
   );
   if (response.statusCode == 200) {

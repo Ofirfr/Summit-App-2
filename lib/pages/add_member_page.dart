@@ -4,11 +4,9 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'menu_page.dart';
 import '../api/coms.dart';
 
-//Part of this Login page was taken from https://flutterawesome.com/tag/login-screen/
 class AddMemberPage extends StatelessWidget {
   const AddMemberPage({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +57,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           image:
                               AssetImage("assets/images/summit_big_logo.png"))),
                 )),
-            // Login text Widget
             Align(
                 alignment: Alignment.center,
                 child: Text(
@@ -71,13 +68,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 )),
-
             SizedBox(
               height: screenSize.height * 0.04,
               width: 10,
             ),
-
-            // Textfields for username and password fields
             SizedBox(
               width: screenSize.width * 0.9,
               child: Column(
@@ -86,16 +80,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     children: [
                       SizedBox(
                           width: screenSize.width * 0.2,
-                          child: Text("Full Name")),
+                          child: const Text("Full Name")),
                       SizedBox(
                           width: screenSize.width * 0.5,
                           child: TextFormField(
                             onTap: () {},
-                            controller:
-                                fullNameController, // Controller for Username
+                            controller: fullNameController,
                             decoration: const InputDecoration(
                                 border: InputBorder.none,
-                                hintText: "First Name",
+                                hintText: "Full Name",
                                 contentPadding: EdgeInsets.all(20)),
                             onEditingComplete: () =>
                                 FocusScope.of(context).nextFocus(),
@@ -108,13 +101,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                   Row(
                     children: [
                       SizedBox(
-                          width: screenSize.width * 0.2, child: Text("Email")),
+                          width: screenSize.width * 0.2,
+                          child: const Text("Email")),
                       SizedBox(
                           width: screenSize.width * 0.5,
                           child: TextFormField(
                             onTap: () {},
-                            controller:
-                                emailController, // Controller for Username
+                            controller: emailController,
                             decoration: const InputDecoration(
                                 border: InputBorder.none,
                                 hintText: "Email",
@@ -131,13 +124,12 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     children: [
                       SizedBox(
                           width: screenSize.width * 0.2,
-                          child: Text("Phone Number")),
+                          child: const Text("Phone Number")),
                       SizedBox(
                           width: screenSize.width * 0.5,
                           child: TextFormField(
                             onTap: () {},
-                            controller:
-                                phoneController, // Controller for Username
+                            controller: phoneController,
                             decoration: const InputDecoration(
                                 border: InputBorder.none,
                                 hintText: "Phone Number",
@@ -154,13 +146,12 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                     children: [
                       SizedBox(
                           width: screenSize.width * 0.2,
-                          child: Text("District")),
+                          child: const Text("District")),
                       SizedBox(
                           width: screenSize.width * 0.5,
                           child: TextFormField(
                             onTap: () {},
-                            controller:
-                                districtController, // Controller for Username
+                            controller: districtController,
                             decoration: const InputDecoration(
                                 border: InputBorder.none,
                                 hintText: "District",
@@ -193,9 +184,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           if (result == "User $userName added.") {
                             Navigator.pushAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        Menu(name: payload["name"].toString())),
+                                MaterialPageRoute(builder: (context) => Menu()),
                                 (Route<dynamic> route) => false);
                           } else {
                             setState(() {
@@ -220,7 +209,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           fontFamily: 'Pacifico'))
                 ],
               ),
-              // Submit Button
             ),
           ],
         ));

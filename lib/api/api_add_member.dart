@@ -6,7 +6,7 @@ const String baseUrl = coms.Consts.ip;
 
 Future<String> addMember(
     String userName, String email, String phoneNumber, String district) async {
-  var response = await http.post(Uri.http(baseUrl, "user/AddUser"),
+  var response = await http.post(coms.Consts.UriGen(baseUrl, "user/AddUser"),
       headers: {
         "content-type": "application/json",
         "x-auth-token": coms.Coms.token

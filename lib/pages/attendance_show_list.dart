@@ -82,9 +82,7 @@ class _AttendanceResultState extends State<AttendanceResult> {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              Menu(name: payload["name"].toString())),
+                      MaterialPageRoute(builder: (context) => Menu()),
                       (Route<dynamic> route) => false);
                 },
                 child: Text(

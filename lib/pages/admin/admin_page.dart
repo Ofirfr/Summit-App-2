@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:summit_app_2/pages/add_member_page.dart';
+import 'package:summit_app_2/pages/admin/admin_coach_page.dart';
+import 'package:summit_app_2/pages/admin/admin_district_page.dart';
+import 'package:summit_app_2/pages/admin/admin_type_page.dart';
 import 'package:summit_app_2/pages/attendance_calendar_page.dart';
 import 'package:summit_app_2/pages/login_page.dart';
-import '../api/Coms.dart' as coms;
+import '../../api/Coms.dart' as coms;
 
 class AdminPage extends StatelessWidget {
   const AdminPage({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class AdminPage extends StatelessWidget {
     ];
     List<Widget> secondRow = [
       menuButtonsWidget(
-          "Add Coach", Colors.greenAccent, Icons.add_box_outlined, context),
+          "Coaches", Colors.greenAccent, Icons.groups_outlined, context),
       const SizedBox(width: 1), //for spacing
       menuButtonsWidget(
           "Statistics", Colors.redAccent, Icons.bar_chart_outlined, context),
@@ -42,21 +45,6 @@ class AdminPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.green,
           title: const Text("Summit Running and Fitness"),
-          actions: <Widget>[
-            Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: GestureDetector(
-                  onTap: () {
-                    coms.Coms.token = "";
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => const Login()));
-                  },
-                  child: const Icon(
-                    Icons.logout_outlined,
-                    size: 26.0,
-                  ),
-                )),
-          ],
         ),
         body: SingleChildScrollView(
           reverse: true,
@@ -137,30 +125,29 @@ class AdminPage extends StatelessWidget {
                   fontWeight: FontWeight.bold)),
           onPressed: () {
             switch (label) {
-              case "Add Member":
+              case "Districts":
                 {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddMemberPage()),
+                        builder: (context) => const DistrictPage()),
                   );
                   break;
                 }
 
-              case "Admin Page":
+              case "Types":
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AdminPage()),
+                    MaterialPageRoute(builder: (context) => const TypePage()),
                   );
                   break;
                 }
-              case "Check Attendance":
+              case "Coaches":
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const AttendanceCalendarPage()),
+                    MaterialPageRoute(builder: (context) => const CoachPage()),
                   );
                   break;
                 }

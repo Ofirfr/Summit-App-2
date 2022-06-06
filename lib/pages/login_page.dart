@@ -121,8 +121,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     if (loggingErrors == "") {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => Menu(name: userName)),
+                        MaterialPageRoute(builder: (context) => Menu()),
                       );
                     } else {
                       setState(() {

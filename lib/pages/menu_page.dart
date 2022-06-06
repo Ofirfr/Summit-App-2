@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:summit_app_2/pages/add_member_page.dart';
-import 'package:summit_app_2/pages/admin_page.dart';
+import 'package:summit_app_2/pages/admin/admin_page.dart';
 import 'package:summit_app_2/pages/attendance_calendar_page.dart';
 import 'package:summit_app_2/pages/login_page.dart';
 import '../api/Coms.dart' as coms;
+import 'package:jwt_decode/jwt_decode.dart';
+import '../api/coms.dart';
 
 class Menu extends StatelessWidget {
-  const Menu({Key? key, required this.name}) : super(key: key);
-  final String name;
+  Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
+
+  Menu({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    String name = payload['name'].toString();
     List<Widget> firstRow = [
       menuButtonsWidget("Check Attendance", Colors.blueAccent,
           Icons.calendar_month_outlined, context),
@@ -171,8 +176,7 @@ class Menu extends StatelessWidget {
                   break;
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const Menu(name: "")),
+                    MaterialPageRoute(builder: (context) => Menu()),
                   );
                   break;
                 }
