@@ -5,7 +5,7 @@ import 'coms.dart' as coms;
 const String baseUrl = coms.Consts.ip;
 
 Future<String> addCoach(String coachName, String password, bool isAdmin) async {
-  var response = await http.post(coms.Consts.UriGen(baseUrl, "coach/AddCoach"),
+  var response = await http.post(coms.Consts.uriGen(baseUrl, "coach/AddCoach"),
       headers: {
         "content-type": "application/json",
         "x-auth-token": coms.Coms.token
@@ -24,7 +24,7 @@ Future<String> addCoach(String coachName, String password, bool isAdmin) async {
 
 Future<String> addType(String type) async {
   var response = await http.post(
-      coms.Consts.UriGen(baseUrl, "type/AddTrainingType"),
+      coms.Consts.uriGen(baseUrl, "type/AddTrainingType"),
       headers: {
         "content-type": "application/json",
         "x-auth-token": coms.Coms.token
@@ -42,7 +42,7 @@ Future<String> addType(String type) async {
 
 Future<String> addDistrict(String districtName) async {
   var response = await http.post(
-      coms.Consts.UriGen(baseUrl, "district/AddDistrict"),
+      coms.Consts.uriGen(baseUrl, "district/AddDistrict"),
       headers: {
         "content-type": "application/json",
         "x-auth-token": coms.Coms.token

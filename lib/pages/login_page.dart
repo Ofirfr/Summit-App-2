@@ -12,11 +12,11 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-  late TextEditingController _userNameController =
+  late final TextEditingController _userNameController =
       TextEditingController(text: '');
-  late TextEditingController _passwordController =
+  late final TextEditingController _passwordController =
       TextEditingController(text: '');
-  bool _obsecureText = true;
+  final bool _obsecureText = true;
   String _errors = "";
   @override
   void dispose() {

@@ -6,7 +6,7 @@ const String baseUrl = coms.Consts.ip;
 
 Future<List<String>> getCoaches() async {
   var response = await http.get(
-    coms.Consts.UriGen(baseUrl, "coach/GetAllCoaches"),
+    coms.Consts.uriGen(baseUrl, "coach/GetAllCoaches"),
     headers: {"x-auth-token": coms.Coms.token},
   );
   if (response.statusCode == 200) {

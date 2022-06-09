@@ -39,7 +39,7 @@ class _AttendanceListState extends State<AttendanceList> {
     List<String> users = await (api.getDistrictUsers(district));
     List<bool> selected =
         List<bool>.generate(users.length, (int index) => false);
-    Map<String, bool> usersSelected = new Map();
+    Map<String, bool> usersSelected = {};
     for (var i = 0; i < users.length; i++) {
       usersSelected[users[i]] = selected[i];
     }
@@ -50,7 +50,7 @@ class _AttendanceListState extends State<AttendanceList> {
     List<String> users = await (api.getOtherDistrictsUsers(district));
     List<bool> selected =
         List<bool>.generate(users.length, (int index) => false);
-    Map<String, bool> usersSelected = new Map();
+    Map<String, bool> usersSelected = {};
     for (var i = 0; i < users.length; i++) {
       usersSelected[users[i]] = selected[i];
     }

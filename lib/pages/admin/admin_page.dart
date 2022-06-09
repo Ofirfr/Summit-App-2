@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:summit_app_2/pages/add_member_page.dart';
 import 'package:summit_app_2/pages/admin/admin_coach_page.dart';
 import 'package:summit_app_2/pages/admin/admin_district_page.dart';
+import 'package:summit_app_2/pages/admin/admin_stats.dart';
 import 'package:summit_app_2/pages/admin/admin_type_page.dart';
-import 'package:summit_app_2/pages/attendance_calendar_page.dart';
-import 'package:summit_app_2/pages/login_page.dart';
-import '../../api/Coms.dart' as coms;
 
 class AdminPage extends StatelessWidget {
   const AdminPage({Key? key}) : super(key: key);
@@ -151,11 +148,12 @@ class AdminPage extends StatelessWidget {
                   );
                   break;
                 }
-              case "Events":
+              case "Statistics":
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AdminPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const AdminStatsPage()),
                   );
                   break;
                 }

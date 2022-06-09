@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'pages/login_page.dart';
-import 'api/api_training_type.dart' as types;
 
 void main() {
   runApp(const SummitApp2());

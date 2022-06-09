@@ -8,7 +8,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 import '../api/coms.dart';
 
 class Menu extends StatelessWidget {
-  Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
+  final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
 
   Menu({Key? key}) : super(key: key);
 

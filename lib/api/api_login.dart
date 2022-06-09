@@ -5,7 +5,7 @@ import 'coms.dart' as coms;
 const String baseUrl = coms.Consts.ip;
 
 Future<String> login(String userName, String password) async {
-  var response = await http.post(coms.Consts.UriGen(baseUrl, "coach/Login"),
+  var response = await http.post(coms.Consts.uriGen(baseUrl, "coach/Login"),
       headers: {"content-type": "application/json"},
       body: convert.jsonEncode({"coachName": userName, "password": password}));
   if (response.statusCode == 200) {

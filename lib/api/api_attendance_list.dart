@@ -6,7 +6,7 @@ const String baseUrl = coms.Consts.ip;
 
 Future<List<String>> getDistrictUsers(String district) async {
   var response = await http.get(
-    coms.Consts.UriGen(
+    coms.Consts.uriGen(
         baseUrl, "district/GetUsersByDistrict", {"districtName": district}),
     headers: {"x-auth-token": coms.Coms.token},
   );
@@ -30,7 +30,7 @@ Future<List<String>> getDistrictUsers(String district) async {
 
 Future<List<String>> getOtherDistrictsUsers(String district) async {
   var response = await http.get(
-    coms.Consts.UriGen(baseUrl, "district/GetUsersByOtherDistricts",
+    coms.Consts.uriGen(baseUrl, "district/GetUsersByOtherDistricts",
         {"districtName": district}),
     headers: {"x-auth-token": coms.Coms.token},
   );
@@ -68,7 +68,7 @@ Future<List<String>> sendAttendance(
   });
 
   var response = await http.post(
-      coms.Consts.UriGen(baseUrl, "training/UpdateAttendance"),
+      coms.Consts.uriGen(baseUrl, "training/UpdateAttendance"),
       headers: {
         "x-auth-token": coms.Coms.token,
         "content-type": "application/json"
@@ -87,7 +87,7 @@ Future<List<String>> sendAttendance(
 Future<List<String>> getAttendance(
     String district, String date, String type) async {
   var response = await http.get(
-    coms.Consts.UriGen(baseUrl, "training/GetAttendance",
+    coms.Consts.uriGen(baseUrl, "training/GetAttendance",
         {"date": date, "type": type, "district": district}),
     headers: {"x-auth-token": coms.Coms.token},
   );
