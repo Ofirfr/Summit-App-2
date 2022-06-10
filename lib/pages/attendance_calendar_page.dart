@@ -21,18 +21,6 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
   String _selectedType = "Type";
   String _errors = '';
 
-  String getDistrict() {
-    return _selectedDistrict;
-  }
-
-  String getDate() {
-    return _selectedDate;
-  }
-
-  String getType() {
-    return _selectedType;
-  }
-
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
       _selectedDate = args.value.toString().substring(0, 8);

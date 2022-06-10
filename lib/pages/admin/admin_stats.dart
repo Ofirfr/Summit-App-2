@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:summit_app_2/pages/attendance_list_page.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
-import '../../api/coms.dart' as coms;
 import '../../api/api_district.dart' as districts;
 import '../../api/api_training_type.dart' as types;
+import "../../api/api_coaches.dart" as coaches;
+import "../../api/api_admin_stats.dart" as stats;
+import './admin_show_stats_page.dart';
 
 class AdminStatsPage extends StatefulWidget {
   const AdminStatsPage({Key? key}) : super(key: key);
@@ -17,25 +19,16 @@ class AdminStatsPage extends StatefulWidget {
 class AdminStatsPageState extends State<AdminStatsPage> {
   late Future<List<String>> _districtList;
   late Future<List<String>> _typeList;
-  String _selectedDate =
-      DateFormat('dd-MM-yyyy').format(DateTime.now()).toString();
+  late Future<List<String>> _coachList;
+
+  // String _selectedDate =
+  //     DateFormat('dd-MM-yyyy').format(DateTime.now()).toString();
   String _range =
-      "${DateFormat('dd-MM-yyyy').format(DateTime.now())} - ${DateFormat('dd-MM-yyyy').format(DateTime.now())}";
+      "${DateFormat('dd/MM/yyyy').format(DateTime.now())} - ${DateFormat('dd/MM/yyyy').format(DateTime.now())}";
   String _selectedDistrict = 'Any';
   String _selectedType = "Any";
+  String _selectedCoach = "Any";
   String _errors = '';
-
-  String getDistrict() {
-    return _selectedDistrict;
-  }
-
-  String getDate() {
-    return _selectedDate;
-  }
-
-  String getType() {
-    return _selectedType;
-  }
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
@@ -43,8 +36,6 @@ class AdminStatsPageState extends State<AdminStatsPage> {
         _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
             // ignore: lines_longer_than_80_chars
             ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-      } else if (args.value is DateTime) {
-        _selectedDate = args.value.toString();
       }
     });
   }
@@ -54,6 +45,7 @@ class AdminStatsPageState extends State<AdminStatsPage> {
     super.initState();
     _districtList = getDistricts();
     _typeList = getTypes();
+    _coachList = getCoaches();
   }
 
   Future<List<String>> getDistricts() async {
@@ -62,6 +54,15 @@ class AdminStatsPageState extends State<AdminStatsPage> {
 
   Future<List<String>> getTypes() async {
     return await (types.getTypes());
+  }
+
+  Future<List<String>> getCoaches() async {
+    List<String> result = await (coaches.getCoaches());
+    List<String> names = [];
+    for (var coach in result) {
+      names.add(coach.split(',')[0]);
+    }
+    return names;
   }
 
   @override
@@ -92,19 +93,21 @@ class AdminStatsPageState extends State<AdminStatsPage> {
             ),
             Center(
               child: Text("Choose filters",
-                  style: GoogleFonts.josefinSans(
-                    fontSize: screenSize.width * 0.07,
-                  )),
+                  style: TextStyle(
+                      fontSize: screenSize.width * 0.07,
+                      fontFamily: "Pacifico")),
             ),
             Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   width: screenSize.width * 0.04,
                 ),
                 SizedBox(
-                  width: screenSize.width * 0.3,
+                  width: screenSize.width * 0.5,
                   child: Text(
-                    "Selected Range: $_range",
+                    "Selected Range:\n$_range",
                     style: TextStyle(
                         color: Colors.black87,
                         fontSize:
@@ -151,80 +154,91 @@ class AdminStatsPageState extends State<AdminStatsPage> {
             SizedBox(
               height: screenSize.height * 0.1,
             ),
-            Row(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
                   width: screenSize.width * 0.04,
                 ),
                 Row(
-                  children: [
-                    SizedBox(
-                      width: screenSize.width * 0.13,
-                      child: Text("District:"),
-                    ),
-                    SizedBox(
-                        height: screenSize.height * 0.06,
-                        width: screenSize.width * 0.18,
-                        child: FutureBuilder<List<String>>(
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return DropdownButton<String>(
-                                icon: const Icon(Icons.import_export_sharp),
-                                hint: Text(
-                                  "Any",
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: screenSize.width * 0.15,
+                        child: Text("District:"),
+                      ),
+                      SizedBox(
+                          height: screenSize.height * 0.06,
+                          width: screenSize.width * 0.36,
+                          child: FutureBuilder<List<String>>(
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return DropdownButton<String>(
+                                  isExpanded: true,
+                                  icon: const Icon(Icons.import_export_sharp),
+                                  hint: Text(
+                                    "Any",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: screenSize.width *
+                                                screenSize.height *
+                                                0.00001 +
+                                            10),
+                                  ),
+                                  value: _selectedDistrict == "Any"
+                                      ? null
+                                      : _selectedDistrict,
+                                  elevation: 16,
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: screenSize.width *
                                               screenSize.height *
                                               0.00001 +
                                           10),
-                                ),
-                                value: _selectedDistrict == "Any"
-                                    ? null
-                                    : _selectedDistrict,
-                                elevation: 16,
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: screenSize.width *
-                                            screenSize.height *
-                                            0.00001 +
-                                        10),
-                                underline: Container(
-                                  height: 2,
-                                  color: Colors.green,
-                                ),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _selectedDistrict = newValue!;
-                                    _errors = '';
-                                  });
-                                },
-                                items: snapshot.data!
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              );
-                            } else {
-                              return const LinearProgressIndicator();
-                            }
-                          },
-                          future: _districtList,
-                        )),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.green,
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _selectedDistrict = newValue!;
+                                      _errors = '';
+                                    });
+                                  },
+                                  items: snapshot.data!
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                );
+                              } else {
+                                return const LinearProgressIndicator();
+                              }
+                            },
+                            future: _districtList,
+                          ))
+                    ]),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     SizedBox(
-                      width: screenSize.width * 0.13,
+                      width: screenSize.width * 0.15,
                       child: Text("Type:"),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,
-                        width: screenSize.width * 0.18,
+                        width: screenSize.width * 0.36,
                         child: FutureBuilder<List<String>>(
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return DropdownButton<String>(
+                                alignment: Alignment.centerLeft,
+                                isExpanded: true,
                                 icon: const Icon(Icons.import_export_sharp),
                                 hint: Text(
                                   "Any",
@@ -269,6 +283,69 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                             }
                           },
                           future: _typeList,
+                        )),
+                  ],
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: screenSize.width * 0.15,
+                      child: Text("Coach:"),
+                    ),
+                    SizedBox(
+                        height: screenSize.height * 0.06,
+                        width: screenSize.width * 0.36,
+                        child: FutureBuilder<List<String>>(
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return DropdownButton<String>(
+                                isExpanded: true,
+                                icon: const Icon(Icons.import_export_sharp),
+                                hint: Text(
+                                  "Any",
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: screenSize.width *
+                                              screenSize.height *
+                                              0.00001 +
+                                          10),
+                                ),
+                                value: _selectedCoach == "Any"
+                                    ? null
+                                    : _selectedCoach,
+                                elevation: 16,
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: screenSize.width *
+                                            screenSize.height *
+                                            0.00001 +
+                                        10),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.green,
+                                ),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _selectedCoach = newValue!;
+                                    _errors = '';
+                                  });
+                                },
+                                items: snapshot.data!
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              );
+                            } else {
+                              return const LinearProgressIndicator();
+                            }
+                          },
+                          future: _coachList,
                         ))
                   ],
                 ),
@@ -279,7 +356,23 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                     primary: Colors.green,
                     fixedSize: Size(
                         screenSize.width * 0.38, screenSize.height * 0.05)),
-                onPressed: () {},
+                onPressed: () async {
+                  print(_selectedCoach);
+                  List<String> range = (_range.split('-'));
+                  print(_range);
+                  print(_selectedDistrict);
+                  print(_selectedType);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => StatsResult(
+                                startDate: range[0],
+                                endDate: range[1],
+                                district: _selectedDistrict,
+                                coach: _selectedCoach,
+                                type: _selectedType,
+                              )));
+                },
                 child: Text(
                   "View Stats",
                   style: TextStyle(
