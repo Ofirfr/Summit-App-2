@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:summit_app_2/pages/attendance_list_page.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import '../api/coms.dart' as coms;
+// ignore: depend_on_referenced_packages
+import 'package:intl/intl.dart';
 import '../api/api_district.dart' as districts;
 import '../api/api_training_type.dart' as types;
 
@@ -16,14 +17,14 @@ class AttendanceCalendarPage extends StatefulWidget {
 class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
   late Future<List<String>> _districtList;
   late Future<List<String>> _typeList;
-  String _selectedDate = DateTime.now().toString();
+  String _selectedDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
   String _selectedDistrict = 'District';
   String _selectedType = "Type";
   String _errors = '';
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
-      _selectedDate = args.value.toString().substring(0, 8);
+      _selectedDate = DateFormat('dd/MM/yyyy').format(args.value);
     });
   }
 
@@ -35,11 +36,11 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
   }
 
   Future<List<String>> getDistricts() async {
-    return await (districts.getDistricts());
+    return await (districts.getActiveDistricts());
   }
 
   Future<List<String>> getTypes() async {
-    return await (types.getTypes());
+    return await (types.getActiveTypes());
   }
 
   @override
@@ -51,6 +52,7 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
           title: const Text('Summit Running and Fitness'),
         ),
         body: Column(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Align(
                 alignment: Alignment.centerLeft,
@@ -70,87 +72,171 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
             ),
             Center(
               child: Text("Set Training Info",
-                  style: GoogleFonts.josefinSans(
-                    fontSize: screenSize.width * 0.07,
-                  )),
+                  style: TextStyle(
+                      fontSize: screenSize.width * 0.07,
+                      fontFamily: "Pacifico")),
             ),
             SizedBox(
-              child: SfDateRangePicker(
-                selectionColor: Colors.green,
-                onSelectionChanged: _onSelectionChanged,
-                selectionMode: DateRangePickerSelectionMode.single,
-                initialSelectedDate: DateTime.now(),
-              ),
+              height: screenSize.height * 0.03,
             ),
             Row(
+              //mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: screenSize.width * 0.04,
+                ),
+                SizedBox(
+                  width: screenSize.width * 0.5,
+                  child: Text("Selected Date:\n$_selectedDate",
+                      style: TextStyle(
+                          //fontFamily: "Pacifico",
+                          color: Colors.black87,
+                          fontSize:
+                              screenSize.width * screenSize.height * 0.00001 +
+                                  10,
+                          fontWeight: FontWeight.w600)),
+                ),
+                SizedBox(
+                  width: screenSize.width * 0.35,
+                  child: ElevatedButton(
+                    child: Text(
+                      "Change Date",
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize:
+                              screenSize.width * screenSize.height * 0.00001 +
+                                  10),
+                    ),
+                    onPressed: () => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: const Text('Change Range'),
+                              content: SingleChildScrollView(
+                                  reverse: true,
+                                  child: SizedBox(
+                                    width: screenSize.width * 0.2,
+                                    child: SfDateRangePicker(
+                                      selectionColor: Colors.green,
+                                      onSelectionChanged: _onSelectionChanged,
+                                      selectionMode:
+                                          DateRangePickerSelectionMode.single,
+                                    ),
+                                  )),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            )),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: screenSize.height * 0.05,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SizedBox(
                   width: screenSize.width * 0.04,
                 ),
                 Row(
-                  children: [
-                    SizedBox(
-                        height: screenSize.height * 0.06,
-                        width: screenSize.width * 0.18,
-                        child: FutureBuilder<List<String>>(
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return DropdownButton<String>(
-                                icon: const Icon(Icons.import_export_sharp),
-                                hint: Text(
-                                  "District",
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: screenSize.width * 0.15,
+                        child: Text(
+                          "District:",
+                          style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: screenSize.width *
+                                      screenSize.height *
+                                      0.00001 +
+                                  10),
+                        ),
+                      ),
+                      SizedBox(
+                          height: screenSize.height * 0.06,
+                          width: screenSize.width * 0.36,
+                          child: FutureBuilder<List<String>>(
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return DropdownButton<String>(
+                                  isExpanded: true,
+                                  icon: const Icon(Icons.import_export_sharp),
+                                  hint: Text(
+                                    "District",
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: screenSize.width *
+                                                screenSize.height *
+                                                0.00001 +
+                                            10),
+                                  ),
+                                  value: _selectedDistrict == "District"
+                                      ? null
+                                      : _selectedDistrict,
+                                  elevation: 16,
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontSize: screenSize.width *
                                               screenSize.height *
                                               0.00001 +
                                           10),
-                                ),
-                                value: _selectedDistrict == "District"
-                                    ? null
-                                    : _selectedDistrict,
-                                elevation: 16,
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: screenSize.width *
-                                            screenSize.height *
-                                            0.00001 +
-                                        10),
-                                underline: Container(
-                                  height: 2,
-                                  color: Colors.green,
-                                ),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _selectedDistrict = newValue!;
-                                    _errors = '';
-                                  });
-                                },
-                                items: snapshot.data!
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              );
-                            } else {
-                              return const LinearProgressIndicator();
-                            }
-                          },
-                          future: _districtList,
-                        )),
+                                  underline: Container(
+                                    height: 2,
+                                    color: Colors.green,
+                                  ),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _selectedDistrict = newValue!;
+                                      _errors = '';
+                                    });
+                                  },
+                                  items: snapshot.data!
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                );
+                              } else {
+                                return const LinearProgressIndicator();
+                              }
+                            },
+                            future: _districtList,
+                          ))
+                    ]),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     SizedBox(
-                      width: screenSize.width * 0.03,
+                      width: screenSize.width * 0.15,
+                      child: Text(
+                        "Type:",
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontSize:
+                                screenSize.width * screenSize.height * 0.00001 +
+                                    10),
+                      ),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,
-                        width: screenSize.width * 0.18,
+                        width: screenSize.width * 0.36,
                         child: FutureBuilder<List<String>>(
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return DropdownButton<String>(
+                                alignment: Alignment.centerLeft,
+                                isExpanded: true,
                                 icon: const Icon(Icons.import_export_sharp),
                                 hint: Text(
                                   "Type",
@@ -195,46 +281,57 @@ class AttendanceCalendarPageState extends State<AttendanceCalendarPage> {
                             }
                           },
                           future: _typeList,
-                        ))
+                        )),
                   ],
                 ),
                 SizedBox(
-                  width: screenSize.width * 0.07,
+                  height: screenSize.height * 0.02,
                 ),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.green,
-                        fixedSize: Size(
-                            screenSize.width * 0.38, screenSize.height * 0.05)),
-                    onPressed: () {
-                      if (_selectedDistrict == "District") {
-                        setState(() {
-                          _errors += 'Please select District\n';
-                        });
-                        return;
-                      }
-                      if (_selectedType == "Type") {
-                        setState(() {
-                          _errors += 'Please select Type\n';
-                        });
-                        return;
-                      }
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AttendanceList(
-                                    date: _selectedDate,
-                                    district: _selectedDistrict,
-                                    type: _selectedType,
-                                  )));
-                    },
-                    child: Text(
-                      "Check attendance",
-                      style: TextStyle(
-                          fontSize:
-                              screenSize.width * screenSize.height * 0.00001 +
-                                  10),
-                    ))
+                Row(
+                  children: [
+                    SizedBox(
+                      width: screenSize.width * 0.3,
+                    ),
+                    SizedBox(
+                      width: screenSize.width * 0.4,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.green,
+                          ),
+                          onPressed: () {
+                            if (_selectedDistrict == "District") {
+                              setState(() {
+                                _errors += 'Please select District\n';
+                              });
+                              return;
+                            }
+                            if (_selectedType == "Type") {
+                              setState(() {
+                                _errors += 'Please select Type\n';
+                              });
+                              return;
+                            }
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AttendanceList(
+                                          date: _selectedDate,
+                                          district: _selectedDistrict,
+                                          type: _selectedType,
+                                        )));
+                          },
+                          child: Text(
+                            "Check attendance",
+                            style: TextStyle(
+                                fontSize: screenSize.width *
+                                        screenSize.height *
+                                        0.00001 +
+                                    10,
+                                color: Colors.black87),
+                          )),
+                    ),
+                  ],
+                ),
               ],
             ),
             Text(_errors,

@@ -33,7 +33,9 @@ class _TypePageScreenState extends State<TypePageScreen> {
   late Future<List<String>> _types;
   String _errors = "";
   final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
-
+  Map<String, bool> _typesSelected = {};
+  int? _sortIndex;
+  bool _ascending = false;
   @override
   void initState() {
     super.initState();
@@ -41,15 +43,35 @@ class _TypePageScreenState extends State<TypePageScreen> {
   }
 
   Future<List<String>> getTypes() async {
-    List<String> types = await api_show.getTypes();
+    List<String> types = await api_show.getAllTypes();
+    for (var e in types) {
+      _typesSelected[e.split(',')[0]] = false;
+    }
     return types;
   }
 
+  void onSort(int columnIndex, bool ascending) async {
+    if (columnIndex == 0) {
+      (await _types).sort((e1, e2) =>
+          compareString(ascending, e1.split(',')[0], e2.split(',')[0]));
+    } else if (columnIndex == 1) {
+      (await _types).sort((e1, e2) =>
+          compareString(ascending, e1.split(',')[1], e2.split(',')[1]));
+    }
+    setState(() {
+      _sortIndex = columnIndex;
+      _ascending = ascending;
+    });
+  }
+
+  int compareString(bool ascending, String value1, String value2) => ascending
+      ? value1.toLowerCase().compareTo(value2.toLowerCase())
+      : value2.toLowerCase().compareTo(value1.toLowerCase());
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     return SingleChildScrollView(
-        reverse: true,
+        reverse: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -77,49 +99,124 @@ class _TypePageScreenState extends State<TypePageScreen> {
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 )),
-            SizedBox(
-              width: screenSize.width * 0.7,
-              child: FutureBuilder(
-                  builder: ((context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<String> names = snapshot.data as List<String>;
-                      DataTable districtTable = DataTable(
-                          columns: const <DataColumn>[
-                            DataColumn(label: Text("Number")),
-                            DataColumn(
-                              label: Text('Name'),
-                            ),
-                          ],
-                          rows: List<DataRow>.generate(
-                            names.length,
-                            (int index) => DataRow(
-                              color: MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                                // All rows will have the same selected color.
-                                if (states.contains(MaterialState.selected)) {
-                                  return Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.08);
-                                }
-                                // Even rows will have a grey color.
-                                if (index.isEven) {
-                                  return Colors.grey.withOpacity(0.3);
-                                }
-                                return null; // Use default value for other states and odd rows.
-                              }),
-                              cells: <DataCell>[
-                                DataCell(Text("${index + 1}")),
-                                DataCell(Text(names[index])),
+            Row(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                  child: FutureBuilder(
+                      builder: ((context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<String> types = snapshot.data as List<String>;
+                          List<String> names = [];
+                          List<String> active = [];
+                          for (var e in types) {
+                            List<String> district = e.split(',');
+                            names.add(district[0]);
+                            active.add(district[1]);
+                          }
+                          TextStyle textStyle = TextStyle(
+                            color: Colors.black87,
+                            fontSize:
+                                screenSize.width * screenSize.height * 0.00002 +
+                                    8,
+                          );
+                          DataTable districtTable = DataTable(
+                              sortAscending: _ascending,
+                              sortColumnIndex: _sortIndex,
+                              columns: <DataColumn>[
+                                DataColumn(label: Text('Name'), onSort: onSort),
+                                DataColumn(
+                                    label: Text('Active'), onSort: onSort),
                               ],
-                            ),
-                          ));
-                      return districtTable;
-                    } else {
-                      return const LinearProgressIndicator();
+                              dataRowHeight: screenSize.height * 0.08,
+                              rows: List<DataRow>.generate(
+                                names.length,
+                                (int index) => DataRow(
+                                  color:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                          (Set<MaterialState> states) {
+                                    // All rows will have the same selected color.
+                                    if (states
+                                        .contains(MaterialState.selected)) {
+                                      return Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.08);
+                                    }
+                                    // Even rows will have a grey color.
+                                    if (index.isEven) {
+                                      return Colors.black.withOpacity(0.1);
+                                    }
+                                    return null; // Use default value for other states and odd rows.
+                                  }),
+                                  cells: <DataCell>[
+                                    DataCell(Text(
+                                      names[index],
+                                      style: textStyle,
+                                    )),
+                                    DataCell(Text(
+                                      active[index],
+                                      style: textStyle,
+                                    )),
+                                  ],
+                                  selected: _typesSelected[names[index]]!,
+                                  onSelectChanged: (bool? value) {
+                                    setState(() {
+                                      _typesSelected[names[index]] = value!;
+                                    });
+                                  },
+                                ),
+                              ));
+                          return Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Total Results: ${names.length}",
+                                  style: textStyle,
+                                ),
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: districtTable,
+                              )
+                            ],
+                          );
+                        } else {
+                          return const LinearProgressIndicator();
+                        }
+                      }),
+                      future: _types),
+                ))
+              ],
+            ),
+            SizedBox(
+              height: screenSize.height * 0.02,
+              width: 10,
+            ),
+            Align(
+              child: ElevatedButton(
+                child: const Text("Change State Of Selected"),
+                onPressed: () async {
+                  for (var key in _typesSelected.keys) {
+                    var value = _typesSelected[key];
+                    if (value!) {
+                      await api_show.changeState(key);
                     }
-                  }),
-                  future: _types),
+                    value = false;
+                  }
+                  setState(() {
+                    _types = getTypes();
+                    _typesSelected = _typesSelected;
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.04,
+              width: 10,
             ),
             Align(
                 alignment: Alignment.center,

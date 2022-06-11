@@ -85,6 +85,7 @@ class _AttendanceListState extends State<AttendanceList> {
                       List<String> result = await api.sendAttendance(attendance,
                           widget.date, widget.type, widget.district);
                       if (result[0] == "Marked users as attendance") {
+                        // ignore: use_build_context_synchronously
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -167,7 +168,7 @@ class _AttendanceListState extends State<AttendanceList> {
                                 }
                                 // Even rows will have a grey color.
                                 if (index.isEven) {
-                                  return Colors.grey.withOpacity(0.3);
+                                  return Colors.black.withOpacity(0.1);
                                 }
                                 return null; // Use default value for other states and odd rows.
                               }),

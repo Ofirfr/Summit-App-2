@@ -35,7 +35,9 @@ class _CoachPageScreenState extends State<CoachPageScreen> {
   late Future<List<String>> _coaches;
   String _errors = "";
   final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
-
+  Map<String, bool> _coachesSelected = {};
+  int? _sortIndex;
+  bool _ascending = false;
   @override
   void initState() {
     super.initState();
@@ -43,15 +45,38 @@ class _CoachPageScreenState extends State<CoachPageScreen> {
   }
 
   Future<List<String>> getCoaches() async {
-    List<String> coaches = await api_show.getCoaches();
+    List<String> coaches = await api_show.getAllCoaches();
+    for (var e in coaches) {
+      _coachesSelected[e.split(',')[0]] = false;
+    }
     return coaches;
   }
 
+  void onSort(int columnIndex, bool ascending) async {
+    if (columnIndex == 0) {
+      (await _coaches).sort((e1, e2) =>
+          compareString(ascending, e1.split(',')[0], e2.split(',')[0]));
+    } else if (columnIndex == 1) {
+      (await _coaches).sort((e1, e2) =>
+          compareString(ascending, e1.split(',')[1], e2.split(',')[1]));
+    } else if (columnIndex == 2) {
+      (await _coaches).sort((e1, e2) =>
+          compareString(ascending, e1.split(',')[2], e2.split(',')[2]));
+    }
+    setState(() {
+      _sortIndex = columnIndex;
+      _ascending = ascending;
+    });
+  }
+
+  int compareString(bool ascending, String value1, String value2) => ascending
+      ? value1.toLowerCase().compareTo(value2.toLowerCase())
+      : value2.toLowerCase().compareTo(value1.toLowerCase());
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     return SingleChildScrollView(
-        reverse: true,
+        reverse: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -79,58 +104,138 @@ class _CoachPageScreenState extends State<CoachPageScreen> {
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 )),
-            SizedBox(
-              width: screenSize.width * 0.7,
-              child: FutureBuilder(
-                  builder: ((context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<String> coaches = snapshot.data as List<String>;
-                      List<String> names = [];
-                      List<String> isAdmin = [];
-                      for (var e in coaches) {
-                        List<String> coach = e.split(',');
-                        names.add(coach[0]);
-                        isAdmin.add(coach[1]);
-                      }
-                      DataTable districtTable = DataTable(
-                          columns: const <DataColumn>[
-                            DataColumn(label: Text("Number")),
-                            DataColumn(
-                              label: Text('Name'),
-                            ),
-                            DataColumn(label: Text("Admin"))
-                          ],
-                          rows: List<DataRow>.generate(
-                            names.length,
-                            (int index) => DataRow(
-                              color: MaterialStateProperty.resolveWith<Color?>(
-                                  (Set<MaterialState> states) {
-                                // All rows will have the same selected color.
-                                if (states.contains(MaterialState.selected)) {
-                                  return Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.08);
-                                }
-                                // Even rows will have a grey color.
-                                if (index.isEven) {
-                                  return Colors.grey.withOpacity(0.3);
-                                }
-                                return null; // Use default value for other states and odd rows.
-                              }),
-                              cells: <DataCell>[
-                                DataCell(Text("${index + 1}")),
-                                DataCell(Text(names[index])),
-                                DataCell(Text(isAdmin[index]))
+            Row(
+              children: [
+                Expanded(
+                    child: SingleChildScrollView(
+                  child: FutureBuilder(
+                      builder: ((context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<String> coaches = snapshot.data as List<String>;
+                          List<String> names = [];
+                          List<String> isAdmin = [];
+                          List<String> active = [];
+                          for (var e in coaches) {
+                            List<String> coach = e.split(',');
+                            names.add(coach[0]);
+                            isAdmin.add(coach[1]);
+                            active.add(coach[2]);
+                          }
+                          TextStyle textStyle = TextStyle(
+                            color: Colors.black87,
+                            fontSize:
+                                screenSize.width * screenSize.height * 0.00002 +
+                                    8,
+                          );
+                          DataTable coachesTable = DataTable(
+                              sortAscending: _ascending,
+                              sortColumnIndex: _sortIndex,
+                              columnSpacing: 3,
+                              columns: <DataColumn>[
+                                DataColumn(
+                                    label: Text(
+                                      'Name',
+                                    ),
+                                    onSort: onSort),
+                                DataColumn(
+                                    label: Text(
+                                      "Admin",
+                                    ),
+                                    onSort: onSort),
+                                DataColumn(
+                                    label: Text(
+                                      "Active",
+                                    ),
+                                    onSort: onSort)
                               ],
-                            ),
-                          ));
-                      return districtTable;
-                    } else {
-                      return const LinearProgressIndicator();
+                              dataRowHeight: screenSize.height * 0.08,
+                              rows: List<DataRow>.generate(
+                                names.length,
+                                (int index) => DataRow(
+                                  color:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                          (Set<MaterialState> states) {
+                                    // All rows will have the same selected color.
+                                    if (states
+                                        .contains(MaterialState.selected)) {
+                                      return Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.08);
+                                    }
+                                    // Even rows will have a grey color.
+                                    if (index.isEven) {
+                                      return Colors.black.withOpacity(0.1);
+                                    }
+
+                                    return null; // Use default value for other states and odd rows.
+                                  }),
+                                  cells: <DataCell>[
+                                    DataCell(
+                                        Text(names[index], style: textStyle)),
+                                    DataCell(
+                                        Text(isAdmin[index], style: textStyle)),
+                                    DataCell(
+                                        Text(active[index], style: textStyle)),
+                                  ],
+                                  selected: _coachesSelected[names[index]]!,
+                                  onSelectChanged: (bool? value) {
+                                    setState(() {
+                                      _coachesSelected[names[index]] = value!;
+                                    });
+                                  },
+                                ),
+                              ));
+                          return Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Total Results: ${coaches.length}",
+                                  style: textStyle,
+                                ),
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: coachesTable,
+                              )
+                            ],
+                          );
+                        } else {
+                          return const LinearProgressIndicator();
+                        }
+                      }),
+                      future: _coaches),
+                ))
+              ],
+            ),
+            SizedBox(
+              height: screenSize.height * 0.02,
+              width: 10,
+            ),
+            Align(
+              child: ElevatedButton(
+                child: const Text("Change State Of Selected"),
+                onPressed: () async {
+                  for (var key in _coachesSelected.keys) {
+                    var value = _coachesSelected[key];
+                    if (value!) {
+                      await api_show.changeState(key);
                     }
-                  }),
-                  future: _coaches),
+                    value = false;
+                  }
+                  setState(() {
+                    _coaches = getCoaches();
+                    _coachesSelected = _coachesSelected;
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              height: screenSize.height * 0.04,
+              width: 10,
             ),
             Align(
                 alignment: Alignment.center,

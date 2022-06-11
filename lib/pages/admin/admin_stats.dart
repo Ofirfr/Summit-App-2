@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import '../../api/api_district.dart' as districts;
 import '../../api/api_training_type.dart' as types;
 import "../../api/api_coaches.dart" as coaches;
-import "../../api/api_admin_stats.dart" as stats;
 import './admin_show_stats_page.dart';
 
 class AdminStatsPage extends StatefulWidget {
@@ -49,15 +47,20 @@ class AdminStatsPageState extends State<AdminStatsPage> {
   }
 
   Future<List<String>> getDistricts() async {
-    return await (districts.getDistricts());
+    List<String> result = await (districts.getAllDistricts());
+    List<String> names = [];
+    for (var district in result) {
+      names.add(district.split(',')[0]);
+    }
+    return names;
   }
 
   Future<List<String>> getTypes() async {
-    return await (types.getTypes());
+    return await (types.getAllTypes());
   }
 
   Future<List<String>> getCoaches() async {
-    List<String> result = await (coaches.getCoaches());
+    List<String> result = await (coaches.getAllCoaches());
     List<String> names = [];
     for (var coach in result) {
       names.add(coach.split(',')[0]);
@@ -106,17 +109,16 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                 ),
                 SizedBox(
                   width: screenSize.width * 0.5,
-                  child: Text(
-                    "Selected Range:\n$_range",
-                    style: TextStyle(
-                        color: Colors.black87,
-                        fontSize:
-                            screenSize.width * screenSize.height * 0.00001 +
-                                10),
-                  ),
+                  child: Text("Selected Range:\n$_range",
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize:
+                              screenSize.width * screenSize.height * 0.00001 +
+                                  10,
+                          fontWeight: FontWeight.w600)),
                 ),
                 SizedBox(
-                  child: TextButton(
+                  child: ElevatedButton(
                     child: Text(
                       "Change Range",
                       style: TextStyle(

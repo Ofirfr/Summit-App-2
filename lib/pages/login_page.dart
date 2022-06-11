@@ -50,8 +50,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       body: Stack(
         children: [
           Image(
-            image: const NetworkImage(
-                "https://scontent.fhfa1-1.fna.fbcdn.net/v/t1.6435-9/57503541_2327721960582557_7710564158680334336_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=dXp3zfqruXsAX_HQElb&_nc_ht=scontent.fhfa1-1.fna&oh=00_AT_JlY-XfxkVDzjDfjIgs2lHcxPmrSxm1w8OYyD_ij5gLg&oe=62BD0F03"),
+            image: AssetImage("assets/images/summit_login_photo.jpg"),
             errorBuilder: (context, url, error) => const Icon(Icons.error),
             height: double.infinity,
             width: double.infinity,

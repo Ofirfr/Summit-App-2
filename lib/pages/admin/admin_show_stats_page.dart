@@ -66,16 +66,24 @@ class _StatsResultState extends State<StatsResult> {
     } else if (columnIndex == 3) {
       (await _stats)?.sort((e1, e2) =>
           compareString(ascending, e1["type"]["type"], e2["type"]["type"]));
+    } else if (columnIndex == 4) {
+      (await _stats)?.sort((e1, e2) {
+        if (ascending) {
+          return e1["users"].length - e2["users"].length;
+        } else {
+          return e2["users"].length - e1["users"].length;
+        }
+      });
     }
-
     setState(() {
       _sortIndex = columnIndex;
       _ascending = ascending;
     });
   }
 
-  int compareString(bool ascending, String value1, String value2) =>
-      ascending ? value1.compareTo(value2) : value2.compareTo(value1);
+  int compareString(bool ascending, String value1, String value2) => ascending
+      ? value1.toLowerCase().compareTo(value2.toLowerCase())
+      : value2.toLowerCase().compareTo(value1.toLowerCase());
 
   @override
   Widget build(BuildContext context) {
@@ -148,8 +156,9 @@ class _StatsResultState extends State<StatsResult> {
                                 List<dynamic> userList = element["users"];
                                 double count = 0;
                                 for (var user in userList) {
-                                  usersString += user["userName"] + "\n";
                                   count++;
+                                  usersString += "${count.round().toString()}. "
+                                      "${user["userName"]}\n";
                                 }
                                 if (count > maxUsers) {
                                   maxUsers = count;
@@ -166,7 +175,7 @@ class _StatsResultState extends State<StatsResult> {
                                   color: Colors.white,
                                   fontSize: screenSize.width *
                                           screenSize.height *
-                                          0.00001 +
+                                          0.000005 +
                                       8,
                                   fontWeight: FontWeight.bold);
                               if (users.isEmpty) {
@@ -199,10 +208,13 @@ class _StatsResultState extends State<StatsResult> {
                                         label: Text('Type', style: textStyle),
                                         onSort: onSort),
                                     DataColumn(
-                                      label: Text('Users', style: textStyle),
-                                    ),
+                                        label: Text(
+                                          'Users',
+                                          style: textStyle,
+                                        ),
+                                        onSort: onSort),
                                   ],
-                                  dataRowHeight: maxUsers * 50,
+                                  dataRowHeight: maxUsers * 30,
                                   rows: List<DataRow>.generate(
                                     dates.length,
                                     (int index) => DataRow(
