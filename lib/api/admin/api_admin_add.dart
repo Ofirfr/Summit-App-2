@@ -1,6 +1,6 @@
 import 'dart:convert' as convert;
 import "package:http/http.dart" as http;
-import 'coms.dart' as coms;
+import '../coms.dart' as coms;
 
 const String baseUrl = coms.Consts.ip;
 

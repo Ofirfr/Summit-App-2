@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:summit_app_2/api/coms.dart';
-import '../../api/api_admin_stats.dart' as stats;
+import '../../api/admin/api_admin_stats.dart' as stats;
 import 'package:jwt_decode/jwt_decode.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
-class StatsResult extends StatefulWidget {
-  const StatsResult(
+class GeneralStatsResult extends StatefulWidget {
+  const GeneralStatsResult(
       {Key? key,
       required this.startDate,
       required this.endDate,
@@ -21,10 +21,10 @@ class StatsResult extends StatefulWidget {
   final String coach;
 
   @override
-  State<StatsResult> createState() => _StatsResultState();
+  State<GeneralStatsResult> createState() => _GeneralStatsResultState();
 }
 
-class _StatsResultState extends State<StatsResult> {
+class _GeneralStatsResultState extends State<GeneralStatsResult> {
   late Future<List<dynamic>>? _stats;
   final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
   int? _sortIndex;

@@ -1,31 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:summit_app_2/pages/admin/admin_show_users_stats_page.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import '../../api/api_district.dart' as districts;
-import '../../api/api_training_type.dart' as types;
-import "../../api/api_coaches.dart" as coaches;
-import './admin_show_stats_page.dart';
+import "../../api/admin/api_admin_users.dart" as users;
 
-class AdminStatsPage extends StatefulWidget {
-  const AdminStatsPage({Key? key}) : super(key: key);
+class UsersStatsPage extends StatefulWidget {
+  const UsersStatsPage({Key? key}) : super(key: key);
 
   @override
-  AdminStatsPageState createState() => AdminStatsPageState();
+  UsersStatsPageState createState() => UsersStatsPageState();
 }
 
-class AdminStatsPageState extends State<AdminStatsPage> {
+class UsersStatsPageState extends State<UsersStatsPage> {
   late Future<List<String>> _districtList;
-  late Future<List<String>> _typeList;
-  late Future<List<String>> _coachList;
+  late Future<List<String>> _usersList;
 
   // String _selectedDate =
   //     DateFormat('dd-MM-yyyy').format(DateTime.now()).toString();
   String _range =
       "${DateFormat('dd/MM/yyyy').format(DateTime.now())} - ${DateFormat('dd/MM/yyyy').format(DateTime.now())}";
   String _selectedDistrict = 'Any';
-  String _selectedType = "Any";
-  String _selectedCoach = "Any";
+  String _selectedUser = 'Any';
+  final TextEditingController _biggestCount = TextEditingController(text: "0");
   String _errors = '';
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
@@ -42,8 +40,7 @@ class AdminStatsPageState extends State<AdminStatsPage> {
   void initState() {
     super.initState();
     _districtList = getDistricts();
-    _typeList = getTypes();
-    _coachList = getCoaches();
+    _usersList = getUsers();
   }
 
   Future<List<String>> getDistricts() async {
@@ -55,12 +52,8 @@ class AdminStatsPageState extends State<AdminStatsPage> {
     return names;
   }
 
-  Future<List<String>> getTypes() async {
-    return await (types.getAllTypes());
-  }
-
-  Future<List<String>> getCoaches() async {
-    List<String> result = await (coaches.getAllCoaches());
+  Future<List<String>> getUsers() async {
+    List<String> result = await (users.getAllUsers());
     List<String> names = [];
     for (var coach in result) {
       names.add(coach.split(',')[0]);
@@ -230,7 +223,7 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                   children: [
                     SizedBox(
                       width: screenSize.width * 0.15,
-                      child: Text("Type:"),
+                      child: Text("User:"),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,
@@ -251,9 +244,9 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                                               0.00001 +
                                           10),
                                 ),
-                                value: _selectedType == "Any"
+                                value: _selectedUser == "Any"
                                     ? null
-                                    : _selectedType,
+                                    : _selectedUser,
                                 elevation: 16,
                                 style: TextStyle(
                                     color: Colors.black87,
@@ -267,7 +260,7 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                                 ),
                                 onChanged: (String? newValue) {
                                   setState(() {
-                                    _selectedType = newValue!;
+                                    _selectedUser = newValue!;
                                     _errors = '';
                                   });
                                 },
@@ -284,7 +277,7 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                               return const LinearProgressIndicator();
                             }
                           },
-                          future: _typeList,
+                          future: _usersList,
                         )),
                   ],
                 ),
@@ -294,64 +287,20 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                   children: [
                     SizedBox(
                       width: screenSize.width * 0.15,
-                      child: Text("Coach:"),
+                      child: Text("Max Count:"),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,
                         width: screenSize.width * 0.36,
-                        child: FutureBuilder<List<String>>(
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return DropdownButton<String>(
-                                isExpanded: true,
-                                icon: const Icon(Icons.import_export_sharp),
-                                hint: Text(
-                                  "Any",
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: screenSize.width *
-                                              screenSize.height *
-                                              0.00001 +
-                                          10),
-                                ),
-                                value: _selectedCoach == "Any"
-                                    ? null
-                                    : _selectedCoach,
-                                elevation: 16,
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontSize: screenSize.width *
-                                            screenSize.height *
-                                            0.00001 +
-                                        10),
-                                underline: Container(
-                                  height: 2,
-                                  color: Colors.green,
-                                ),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _selectedCoach = newValue!;
-                                    _errors = '';
-                                  });
-                                },
-                                items: snapshot.data!
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              );
-                            } else {
-                              return const LinearProgressIndicator();
-                            }
-                          },
-                          future: _coachList,
-                        ))
+                        child: TextFormField(
+                          controller: _biggestCount,
+                        )),
                   ],
                 ),
               ],
+            ),
+            SizedBox(
+              height: screenSize.height * 0.02,
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -359,20 +308,18 @@ class AdminStatsPageState extends State<AdminStatsPage> {
                     fixedSize: Size(
                         screenSize.width * 0.38, screenSize.height * 0.05)),
                 onPressed: () async {
-                  print(_selectedCoach);
                   List<String> range = (_range.split('-'));
-                  print(_range);
-                  print(_selectedDistrict);
-                  print(_selectedType);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => StatsResult(
+                          builder: (context) => UserStatsResult(
+                                biggestCount: int.parse(
+                                  _biggestCount.text,
+                                ),
+                                user: _selectedUser,
                                 startDate: range[0],
                                 endDate: range[1],
                                 district: _selectedDistrict,
-                                coach: _selectedCoach,
-                                type: _selectedType,
                               )));
                 },
                 child: Text(
