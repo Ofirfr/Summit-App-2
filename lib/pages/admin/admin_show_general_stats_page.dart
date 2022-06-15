@@ -4,6 +4,7 @@ import '../../api/admin/api_admin_stats.dart' as stats;
 import 'package:jwt_decode/jwt_decode.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
+import "../../excel/excelGenerator.dart" as excel;
 
 class GeneralStatsResult extends StatefulWidget {
   const GeneralStatsResult(
@@ -252,12 +253,31 @@ class _GeneralStatsResultState extends State<GeneralStatsResult> {
                                 mainAxisSize: MainAxisSize.max,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      "Total Results: ${dates.length}",
-                                      style: textStyle,
-                                    ),
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: screenSize.width * 0.1,
+                                      ),
+                                      SizedBox(
+                                        child: Text(
+                                          "Total Results: ${dates.length}",
+                                          style: textStyle,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: screenSize.width * 0.3,
+                                      ),
+                                      SizedBox(
+                                          child: ElevatedButton(
+                                        onPressed: () async {
+                                          String fileName =
+                                              "${widget.startDate.trim().replaceAll('/', '-')}_to_${widget.endDate.trim().replaceAll('/', '-')}_report";
+                                          await excel.generateExcel(
+                                              fileName, statsTable);
+                                        },
+                                        child: Text("Export To Excel"),
+                                      )),
+                                    ],
                                   ),
                                   SizedBox(
                                     width: double.infinity,

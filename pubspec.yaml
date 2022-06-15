@@ -36,8 +36,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.4
   syncfusion_flutter_datepicker: ^20.1.58
+  file_saver: ^0.1.0
+  syncfusion_flutter_xlsio: ^20.1.60-beta
   google_fonts: ^3.0.1
   jwt_decode: ^0.3.1
+  permission_handler: ^10.0.0
 
 dev_dependencies:
   flutter_test:
