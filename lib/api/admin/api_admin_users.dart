@@ -24,3 +24,23 @@ Future<List<String>> getAllUsers() async {
   }
   return ["Error"];
 }
+
+Future<String> changeState(String userName) async {
+  var response = await http.post(
+      coms.Consts.uriGen(baseUrl, "user/ChangeState"),
+      headers: {
+        "content-type": "application/json",
+        "x-auth-token": coms.Coms.token
+      },
+      body: convert.jsonEncode({
+        "userName": userName,
+      }));
+  if (response.statusCode == 200) {
+    return response.body;
+  } else if (response.statusCode == 400) {
+    var jsonResponse =
+        convert.jsonDecode(response.body) as Map<String, dynamic>;
+    return (jsonResponse["errors"][0]["msg"]);
+  }
+  return "Error";
+}

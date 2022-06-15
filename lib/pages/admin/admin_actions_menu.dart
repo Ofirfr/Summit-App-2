@@ -1,18 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:summit_app_2/pages/admin/admin_general_stats_page.dart';
-import 'package:summit_app_2/pages/admin/admin_users_stats_page.dart';
+import 'package:summit_app_2/pages/admin/admin_coach_page.dart';
+import 'package:summit_app_2/pages/admin/admin_district_page.dart';
+import 'package:summit_app_2/pages/admin/admin_type_page.dart';
+import 'package:summit_app_2/pages/admin/admin_user_page.dart';
 
-class StatsMenuPage extends StatelessWidget {
-  const StatsMenuPage({Key? key}) : super(key: key);
+class AdminActionsPage extends StatelessWidget {
+  const AdminActionsPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     List<Widget> firstRow = [
-      menuButtonsWidget("General Stats", Colors.blueAccent,
+      menuButtonsWidget("Districts", Colors.blueAccent,
           Icons.travel_explore_outlined, context),
       const SizedBox(width: 1), //for spacing
-      menuButtonsWidget("Users Stats", Colors.orangeAccent,
-          Icons.fitness_center_outlined, context),
+      menuButtonsWidget(
+          "Types", Colors.orangeAccent, Icons.fitness_center_outlined, context),
     ];
+    List<Widget> secondRow = [
+      menuButtonsWidget("Coaches", Colors.greenAccent,
+          Icons.switch_account_outlined, context),
+      const SizedBox(width: 1), //for spacing
+      menuButtonsWidget(
+          "Users", Colors.redAccent, Icons.groups_outlined, context),
+    ];
+
+    var rowSpacer = TableRow(children: [
+      SizedBox(
+        width: 1,
+        height: MediaQuery.of(context).size.height * 0.05,
+      ),
+      const SizedBox(
+        width: 1,
+        height: 10,
+      ),
+      const SizedBox(
+        width: 1,
+        height: 20,
+      )
+    ]);
     var screenSize = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Colors.grey,
@@ -45,12 +69,12 @@ class StatsMenuPage extends StatelessWidget {
                 Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Admin Page",
+                      "Admin Actions",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize:
                               screenSize.width * screenSize.height * 0.00003 +
-                                  12,
+                                  16,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.left,
                     )),
@@ -70,6 +94,8 @@ class StatsMenuPage extends StatelessWidget {
                         },
                         children: [
                           TableRow(children: firstRow),
+                          rowSpacer,
+                          TableRow(children: secondRow),
                         ],
                       ),
                     )),
@@ -97,22 +123,37 @@ class StatsMenuPage extends StatelessWidget {
                   fontWeight: FontWeight.bold)),
           onPressed: () {
             switch (label) {
-              case "General Stats":
+              case "Districts":
                 {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const GeneralStatsPage()),
+                        builder: (context) => const DistrictPage()),
                   );
                   break;
                 }
 
-              case "Users Stats":
+              case "Types":
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const UsersStatsPage()),
+                    MaterialPageRoute(builder: (context) => const TypePage()),
+                  );
+                  break;
+                }
+              case "Coaches":
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CoachPage()),
+                  );
+                  break;
+                }
+              case "Users":
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const UserPage()),
                   );
                   break;
                 }

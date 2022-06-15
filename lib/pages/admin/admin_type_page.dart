@@ -124,9 +124,9 @@ class _TypePageScreenState extends State<TypePageScreen> {
                               sortAscending: _ascending,
                               sortColumnIndex: _sortIndex,
                               columns: <DataColumn>[
-                                DataColumn(label: Text('Name'), onSort: onSort),
+                                DataColumn(label: const Text('Name'), onSort: onSort),
                                 DataColumn(
-                                    label: Text('Active'), onSort: onSort),
+                                    label: const Text('Active'), onSort: onSort),
                               ],
                               dataRowHeight: screenSize.height * 0.08,
                               rows: List<DataRow>.generate(

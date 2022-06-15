@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:summit_app_2/pages/attendance_list_page.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 // ignore: depend_on_referenced_packages

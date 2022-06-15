@@ -168,7 +168,7 @@ class GeneralStatsPageState extends State<GeneralStatsPage> {
                     children: [
                       SizedBox(
                         width: screenSize.width * 0.15,
-                        child: Text("District:"),
+                        child: const Text("District:"),
                       ),
                       SizedBox(
                           height: screenSize.height * 0.06,
@@ -230,7 +230,7 @@ class GeneralStatsPageState extends State<GeneralStatsPage> {
                   children: [
                     SizedBox(
                       width: screenSize.width * 0.15,
-                      child: Text("Type:"),
+                      child: const Text("Type:"),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,
@@ -294,7 +294,7 @@ class GeneralStatsPageState extends State<GeneralStatsPage> {
                   children: [
                     SizedBox(
                       width: screenSize.width * 0.15,
-                      child: Text("Coach:"),
+                      child: const Text("Coach:"),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,

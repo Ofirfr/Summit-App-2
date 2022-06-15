@@ -133,17 +133,17 @@ class _CoachPageScreenState extends State<CoachPageScreen> {
                               columnSpacing: 3,
                               columns: <DataColumn>[
                                 DataColumn(
-                                    label: Text(
+                                    label: const Text(
                                       'Name',
                                     ),
                                     onSort: onSort),
                                 DataColumn(
-                                    label: Text(
+                                    label: const Text(
                                       "Admin",
                                     ),
                                     onSort: onSort),
                                 DataColumn(
-                                    label: Text(
+                                    label: const Text(
                                       "Active",
                                     ),
                                     onSort: onSort)

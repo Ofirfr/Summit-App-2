@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../api/admin/api_admin_add.dart' as api_add;
-import '../../api/api_district.dart' as api_show;
+import '../../api/admin/api_admin_users.dart' as api_show;
 import 'package:jwt_decode/jwt_decode.dart';
 import '../../api/coms.dart';
 
-class DistrictPage extends StatelessWidget {
-  const DistrictPage({Key? key}) : super(key: key);
+class UserPage extends StatelessWidget {
+  const UserPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,24 +15,23 @@ class DistrictPage extends StatelessWidget {
       ),
       backgroundColor: Colors.grey,
       resizeToAvoidBottomInset: true,
-      body: const DistrictPageScreen(),
+      body: const UserPageScreen(),
     );
   }
 }
 
-class DistrictPageScreen extends StatefulWidget {
-  const DistrictPageScreen({Key? key}) : super(key: key);
+class UserPageScreen extends StatefulWidget {
+  const UserPageScreen({Key? key}) : super(key: key);
 
   @override
-  _DistrictPageScreenState createState() => _DistrictPageScreenState();
+  _UserPageScreenState createState() => _UserPageScreenState();
 }
 
-class _DistrictPageScreenState extends State<DistrictPageScreen> {
-  TextEditingController districtNameController = TextEditingController();
+class _UserPageScreenState extends State<UserPageScreen> {
   late Future<List<String>> _districts;
-  String _errors = "";
+  final String _errors = "";
   final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
-  Map<String, bool> _districtsSelected = {};
+  Map<String, bool> _usersSelected = {};
   int? _sortIndex;
   bool _ascending = false;
   @override
@@ -43,11 +41,11 @@ class _DistrictPageScreenState extends State<DistrictPageScreen> {
   }
 
   Future<List<String>> getDistricts() async {
-    List<String> districts = await api_show.getAllDistricts();
-    for (var e in districts) {
-      _districtsSelected[e.split(',')[0]] = false;
+    List<String> users = await api_show.getAllUsers();
+    for (var e in users) {
+      _usersSelected[e.split(',')[0]] = false;
     }
-    return districts;
+    return users;
   }
 
   void onSort(int columnIndex, bool ascending) async {
@@ -165,10 +163,10 @@ class _DistrictPageScreenState extends State<DistrictPageScreen> {
                                       style: textStyle,
                                     )),
                                   ],
-                                  selected: _districtsSelected[names[index]]!,
+                                  selected: _usersSelected[names[index]]!,
                                   onSelectChanged: (bool? value) {
                                     setState(() {
-                                      _districtsSelected[names[index]] = value!;
+                                      _usersSelected[names[index]] = value!;
                                     });
                                   },
                                 ),
@@ -206,8 +204,8 @@ class _DistrictPageScreenState extends State<DistrictPageScreen> {
               child: ElevatedButton(
                 child: const Text("Change State Of Selected"),
                 onPressed: () async {
-                  for (var key in _districtsSelected.keys) {
-                    var value = _districtsSelected[key];
+                  for (var key in _usersSelected.keys) {
+                    var value = _usersSelected[key];
                     if (value!) {
                       await api_show.changeState(key);
                     }
@@ -215,7 +213,7 @@ class _DistrictPageScreenState extends State<DistrictPageScreen> {
                   }
                   setState(() {
                     _districts = getDistricts();
-                    _districtsSelected = _districtsSelected;
+                    _usersSelected = _usersSelected;
                   });
                 },
               ),
@@ -224,91 +222,14 @@ class _DistrictPageScreenState extends State<DistrictPageScreen> {
               height: screenSize.height * 0.04,
               width: 10,
             ),
-            Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Add District",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize:
-                          screenSize.width * screenSize.height * 0.00003 + 22,
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.left,
-                )),
             SizedBox(
-              height: screenSize.height * 0.04,
-              width: 10,
-            ),
-            SizedBox(
-              width: screenSize.width * 0.9,
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: [
-                      SizedBox(
-                          width: screenSize.width * 0.2,
-                          child: const Text("District Name")),
-                      SizedBox(
-                          width: screenSize.width * 0.5,
-                          child: TextFormField(
-                            onTap: () {},
-                            controller: districtNameController,
-                            decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "District Name",
-                                contentPadding: EdgeInsets.all(20)),
-                            onEditingComplete: () =>
-                                FocusScope.of(context).nextFocus(),
-                          )),
-                    ],
-                  ),
-                  const Divider(
-                    thickness: 3,
-                  ),
-                  Container(
-                    width: 570,
-                    height: 100,
-                    padding: const EdgeInsets.only(top: 20),
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 50, vertical: 20),
-                        ),
-                        onPressed: () async {
-                          String districtName = (districtNameController.text);
-                          String result =
-                              await api_add.addDistrict(districtName);
-                          if (result == "District added succesfully") {
-                            setState(() {
-                              _districts = getDistricts();
-                              _errors = '';
-                              districtNameController.clear();
-                            });
-                          } else {
-                            setState(() {
-                              _errors = result;
-                            });
-                          }
-                        },
-                        child: const Text(
-                          "Submit",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                          maxLines: 1,
-                        )),
-                  ),
-                  Text(_errors,
-                      style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                          fontFamily: 'Pacifico'))
-                ],
-              ),
-            ),
+                width: screenSize.width * 0.9,
+                child: Text(_errors,
+                    style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                        fontFamily: 'Pacifico'))),
           ],
         ));
   }

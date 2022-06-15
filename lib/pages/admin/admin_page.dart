@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:summit_app_2/pages/admin/admin_coach_page.dart';
-import 'package:summit_app_2/pages/admin/admin_district_page.dart';
-import 'package:summit_app_2/pages/admin/admin_general_stats_page.dart';
+import 'package:summit_app_2/pages/admin/admin_actions_menu.dart';
 import 'package:summit_app_2/pages/admin/admin_stats_menu.dart';
-import 'package:summit_app_2/pages/admin/admin_type_page.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     List<Widget> firstRow = [
-      menuButtonsWidget("Districts", Colors.blueAccent,
-          Icons.travel_explore_outlined, context),
-      const SizedBox(width: 1), //for spacing
       menuButtonsWidget(
-          "Types", Colors.orangeAccent, Icons.fitness_center_outlined, context),
-    ];
-    List<Widget> secondRow = [
-      menuButtonsWidget(
-          "Coaches", Colors.greenAccent, Icons.groups_outlined, context),
+          "Actions", Colors.blueAccent, Icons.list_alt_outlined, context),
       const SizedBox(width: 1), //for spacing
       menuButtonsWidget(
           "Statistics", Colors.redAccent, Icons.bar_chart_outlined, context),
     ];
+
     var rowSpacer = TableRow(children: [
       SizedBox(
         width: 1,
@@ -74,7 +65,7 @@ class AdminPage extends StatelessWidget {
                           color: Colors.white,
                           fontSize:
                               screenSize.width * screenSize.height * 0.00003 +
-                                  12,
+                                  16,
                           fontWeight: FontWeight.bold),
                       textAlign: TextAlign.left,
                     )),
@@ -94,8 +85,6 @@ class AdminPage extends StatelessWidget {
                         },
                         children: [
                           TableRow(children: firstRow),
-                          rowSpacer,
-                          TableRow(children: secondRow)
                         ],
                       ),
                     )),
@@ -123,32 +112,16 @@ class AdminPage extends StatelessWidget {
                   fontWeight: FontWeight.bold)),
           onPressed: () {
             switch (label) {
-              case "Districts":
+              case "Actions":
                 {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const DistrictPage()),
+                        builder: (context) => const AdminActionsPage()),
                   );
                   break;
                 }
 
-              case "Types":
-                {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const TypePage()),
-                  );
-                  break;
-                }
-              case "Coaches":
-                {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CoachPage()),
-                  );
-                  break;
-                }
               case "Statistics":
                 {
                   Navigator.push(

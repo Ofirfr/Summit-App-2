@@ -161,7 +161,7 @@ class UsersStatsPageState extends State<UsersStatsPage> {
                     children: [
                       SizedBox(
                         width: screenSize.width * 0.15,
-                        child: Text("District:"),
+                        child: const Text("District:"),
                       ),
                       SizedBox(
                           height: screenSize.height * 0.06,
@@ -223,7 +223,7 @@ class UsersStatsPageState extends State<UsersStatsPage> {
                   children: [
                     SizedBox(
                       width: screenSize.width * 0.15,
-                      child: Text("User:"),
+                      child: const Text("User:"),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,
@@ -287,7 +287,7 @@ class UsersStatsPageState extends State<UsersStatsPage> {
                   children: [
                     SizedBox(
                       width: screenSize.width * 0.15,
-                      child: Text("Max Count:"),
+                      child: const Text("Max Count:"),
                     ),
                     SizedBox(
                         height: screenSize.height * 0.06,
