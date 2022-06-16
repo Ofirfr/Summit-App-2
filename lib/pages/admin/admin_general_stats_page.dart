@@ -56,7 +56,12 @@ class GeneralStatsPageState extends State<GeneralStatsPage> {
   }
 
   Future<List<String>> getTypes() async {
-    return await (types.getAllTypes());
+    List<String> result = await (types.getAllTypes());
+    List<String> names = [];
+    for (var type in result) {
+      names.add(type.split(',')[0]);
+    }
+    return names;
   }
 
   Future<List<String>> getCoaches() async {

@@ -62,9 +62,8 @@ Future<void> generateExcel(String fileName, DataTable table) async {
   if (Platform.isAndroid || Platform.isIOS) {
     await FileSaver.instance.saveAs(fileName, data, 'xlsx', type);
   } else {
-    print(fileName);
     String path = await FileSaver.instance
         .saveFile(fileName, data, 'xlsx', mimeType: type);
-    print(path);
+    log(path);
   }
 }

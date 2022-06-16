@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:summit_app_2/pages/menu_page.dart';
 import '../api/api_login.dart' as api;
@@ -120,7 +122,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     if (loggingErrors == "") {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Menu()),
+                        MaterialPageRoute(builder: (context) => const Menu()),
                       );
                     } else {
                       setState(() {

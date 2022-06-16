@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:summit_app_2/pages/add_member_page.dart';
 import 'package:summit_app_2/pages/admin/admin_page.dart';
 import 'package:summit_app_2/pages/attendance_calendar_page.dart';
 import 'package:summit_app_2/pages/login_page.dart';
-import '../api/Coms.dart' as coms;
+import '../api/coms.dart' as coms;
 import 'package:jwt_decode/jwt_decode.dart';
-import '../api/coms.dart';
 
-class Menu extends StatelessWidget {
-  final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
-
-  Menu({Key? key}) : super(key: key);
+class Menu extends StatefulWidget {
+  const Menu({Key? key}) : super(key: key);
 
   @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
+  @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> payload = Jwt.parseJwt(coms.Coms.token);
     String name = payload['name'].toString();
     List<Widget> firstRow = [
       menuButtonsWidget("Check Attendance", Colors.blueAccent,
@@ -55,6 +59,11 @@ class Menu extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     coms.Coms.token = "";
+                    SharedPreferences.getInstance().then(
+                      (prefs) {
+                        prefs.setString("token", "");
+                      },
+                    );
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));
                   },

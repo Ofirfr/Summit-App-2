@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/api_add_member.dart' as api;
-import 'package:jwt_decode/jwt_decode.dart';
 import 'menu_page.dart';
-import '../api/coms.dart';
 
 class AddMemberPage extends StatelessWidget {
   const AddMemberPage({Key? key}) : super(key: key);
@@ -35,7 +33,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController districtController = TextEditingController();
   String _errors = "";
-  final Map<String, dynamic> payload = Jwt.parseJwt(Coms.token);
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;

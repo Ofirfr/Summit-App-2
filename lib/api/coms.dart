@@ -4,5 +4,5 @@ class Consts {
 }
 
 class Coms {
-  static var token = "";
+  static String token = "";
 }
